@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Dashboard from './screens/Dashborad';
+import Detail from './screens/DetailCountry';
 
 const AppStack = createStackNavigator();
 
@@ -18,6 +19,7 @@ const Routes = () => {
         }}
       >
         <AppStack.Screen name="Dashboard" component={Dashboard} />
+        <AppStack.Screen name="Detail" component={Detail} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

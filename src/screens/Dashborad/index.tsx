@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
+import {useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 import { Feather as Icon } from '@expo/vector-icons';
+import Detail from '../DetailCountry';
 
 interface CountryCounter {
   Country: string;
@@ -35,6 +37,12 @@ interface Sumary {
 // }
 
 export default function Dashboard() {
+  const navigation = useNavigation();
+
+  function navigationToDetail(){
+    navigation.navigate('Detail');
+  }
+
   const [cards, setCards] = useState<CountryCounter[]>([])
   const [globalCounter, setGlobalCounter] = useState<GlobalCounter>({} as GlobalCounter)
   // const [countries, setCountries] = useState<Countries[]>([]) //All Countries
@@ -93,11 +101,17 @@ export default function Dashboard() {
             <Icon name="globe" style={{fontSize: 20, marginRight: 5}} />
             <Text style={styles.globalStatusTitle}>No mundo</Text>
           </View>
+          <Text style={styles.globalDescriptionText}> Casos confirmados</Text>
           <Text style={styles.globalStatusText}>{globalCounter.TotalConfirmed}</Text>
+          <Text style={styles.globalDescriptionText}> Total Mortos</Text>
           <Text style={styles.globalStatusText}>{globalCounter.TotalDeaths}</Text>
+          <Text style={styles.globalDescriptionText}> Total recuperados</Text>
           <Text style={styles.globalStatusText}>{globalCounter.TotalRecovered}</Text>
+          <Text style={styles.globalDescriptionText}> Novos confirmados</Text>
           <Text style={styles.globalStatusText}>{globalCounter.NewConfirmed}</Text>
+          <Text style={styles.globalDescriptionText}> Novos mortos</Text>
           <Text style={styles.globalStatusText}>{globalCounter.NewDeaths}</Text>
+          <Text style={styles.globalDescriptionText}> Novos recuperados</Text>
           <Text style={styles.globalStatusText}>{globalCounter.NewRecovered}</Text>
         </View>
       </View>
@@ -110,7 +124,7 @@ export default function Dashboard() {
         >
           {cards.map((item, index) => (
 
-            <TouchableOpacity key={index} onPress={() => console.log(item)}>
+            <TouchableOpacity key={index} onPress={navigationToDetail/*() => console.log(item)*/}>
               <View style={styles.card}>
                 <Image
                   style={styles.flag}
@@ -118,14 +132,14 @@ export default function Dashboard() {
                 />
                 <Text style={styles.country}>{item.Country.length < 15 ? item.Country : item.CountryCode}</Text>
                 {/* <Text style={styles.counter}>{item.Country}</Text> */}
-                <Text style={styles.counterDescription}>Confirmados</Text>
+                <Text style={styles.counterDescription}> Casos confirmados</Text>
                 <Text style={styles.counter}>{item.TotalConfirmed}</Text>
               </View>
             </TouchableOpacity>
           ))}
           <TouchableOpacity onPress={() => { }}>
             <View style={styles.card}>
-              <Text>Mais paises</Text>
+            <Icon name="arrow-right" size={40} color="black" />
             </View>
           </TouchableOpacity>
         </ScrollView>
@@ -164,7 +178,15 @@ const styles = StyleSheet.create({
   },
   globalStatusText: {
     fontFamily: 'Ubuntu_700Bold',
+    paddingEnd: 7,
+    marginLeft: 5,
   },
+  globalDescriptionText: {
+    fontFamily: 'Roboto_400Regular',
+    paddingTop: 7,
+    paddingVertical: 3,
+  },
+  
   list: {
     flexDirection: 'row',
     marginTop: 16,
@@ -191,7 +213,9 @@ const styles = StyleSheet.create({
   },
   country: {
     fontFamily: 'Ubuntu_700Bold',
-    paddingBottom: 15
+    paddingBottom: 10,
+    fontSize: 18
+    
   },
   counterDescription: {
 
@@ -199,6 +223,7 @@ const styles = StyleSheet.create({
   },
   counter: {
     fontFamily: 'Ubuntu_700Bold',
-    fontSize: 20
+    fontSize: 20,
+    paddingVertical: 5
   }
 })
