@@ -5,7 +5,7 @@ import api from '../../services/api';
 import { Feather as Icon } from '@expo/vector-icons';
 import Detail from '../DetailCountry';
 
-interface CountryCounter {
+export interface CountryCounter {
   Country: string;
   CountryCode: string;
   NewConfirmed: number;
