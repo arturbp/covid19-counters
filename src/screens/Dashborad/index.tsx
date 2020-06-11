@@ -137,7 +137,7 @@ export default function Dashboard() {
               </View>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => navigation.navigate('List')}>
             <View style={styles.card}>
               <Icon name="search" size={40} color="black" />
             </View>
