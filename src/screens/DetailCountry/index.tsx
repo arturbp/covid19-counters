@@ -6,6 +6,8 @@ import { Feather as Icon } from '@expo/vector-icons';
 
 export default function Detail() {
     return (
-        <View/>
+        <View>
+            
+        </View>
     );
 }
