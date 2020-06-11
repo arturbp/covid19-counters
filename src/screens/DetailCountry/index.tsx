@@ -7,7 +7,7 @@ import { Feather as Icon } from '@expo/vector-icons';
 export default function Detail() {
     return (
         <View>
-            <Text> OI </Text>
+            <Text>Hello World 2</Text>
         </View>
     );
 }
