@@ -1,4 +1,4 @@
-# Covid-19 Counters
+# Covid-19: Contadores
 ## Um projeto simples em React Native com API's públicas e Typescript
 
 Instale agora em seu Android [clicando aqui]()
