@@ -39,9 +39,9 @@ interface Sumary {
 export default function Dashboard() {
   const navigation = useNavigation();
 
-  function navigationToDetail() {
-    navigation.navigate('Detail');
-  }
+  /*function navigationToDetail(CountryCode: string) {
+    navigation.navigate('Detail', {Code: CountryCode});
+  }*/
 
   const [cards, setCards] = useState<CountryCounter[]>([])
   const [globalCounter, setGlobalCounter] = useState<GlobalCounter>({} as GlobalCounter)
@@ -124,7 +124,7 @@ export default function Dashboard() {
         >
           {cards.map((item, index) => (
 
-            <TouchableOpacity key={index} onPress={navigationToDetail/*() => console.log(item)*/}>
+            <TouchableOpacity key={index} onPress={() =>navigation.navigate('Detail', item)}>
               <View style={styles.card}>
                 <Image
                   style={styles.flag}

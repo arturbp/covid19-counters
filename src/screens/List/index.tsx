@@ -35,7 +35,7 @@ export default function List() {
     <View style={styles.container}>
       <View style={styles.arrow}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={20} color="black" />
+          <Icon name="arrow-left" size={25} color="black" />
         </TouchableOpacity>
       </View>
       <View style={styles.search}>
@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#dcdce6',
   },
   arrow: {
-    marginVertical: 10
+    marginVertical: 10,
+    marginRight: 250,
   },
   country: {
     backgroundColor: '#FFF',
