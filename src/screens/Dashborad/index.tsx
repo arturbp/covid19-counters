@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
-import {useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 import { Feather as Icon } from '@expo/vector-icons';
 import Detail from '../DetailCountry';
@@ -39,7 +39,7 @@ interface Sumary {
 export default function Dashboard() {
   const navigation = useNavigation();
 
-  function navigationToDetail(){
+  function navigationToDetail() {
     navigation.navigate('Detail');
   }
 
@@ -98,7 +98,7 @@ export default function Dashboard() {
 
         <View style={styles.globalStatus}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
-            <Icon name="globe" style={{fontSize: 20, marginRight: 5}} />
+            <Icon name="globe" style={{ fontSize: 20, marginRight: 5 }} />
             <Text style={styles.globalStatusTitle}>No mundo</Text>
           </View>
           <Text style={styles.globalDescriptionText}> Casos confirmados</Text>
@@ -132,14 +132,14 @@ export default function Dashboard() {
                 />
                 <Text style={styles.country}>{item.Country.length < 15 ? item.Country : item.CountryCode}</Text>
                 {/* <Text style={styles.counter}>{item.Country}</Text> */}
-                <Text style={styles.counterDescription}> Casos confirmados</Text>
+                <Text style={styles.counterDescription}>Casos confirmados</Text>
                 <Text style={styles.counter}>{item.TotalConfirmed}</Text>
               </View>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity onPress={() => { }}>
+          <TouchableOpacity onPress={() => navigation.navigate('List')}>
             <View style={styles.card}>
-            <Icon name="arrow-right" size={40} color="black" />
+              <Icon name="search" size={40} color="black" />
             </View>
           </TouchableOpacity>
         </ScrollView>
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   globalStatus: {
     backgroundColor: '#FFF',
-    marginTop: 50,
+    marginTop: 30,
     padding: 20
   },
   globalStatusTitle: {
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingTop: 7,
     paddingVertical: 3,
   },
-  
+
   list: {
     flexDirection: 'row',
     marginTop: 16,
@@ -196,15 +196,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 10,
     marginRight: 20,
-    // borderWidth: 2,
-    // borderColor: 'black',
     backgroundColor: '#FFF',
     width: 150,
     height: 200,
-    justifyContent: 'center', 
+    justifyContent: 'center',
     alignItems: 'center'
-    // justifyContent: 'center',
-    // alignItems: 'center',
   },
   flag: {
     width: 64,
@@ -215,10 +211,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Ubuntu_700Bold',
     paddingBottom: 10,
     fontSize: 18
-    
+
   },
   counterDescription: {
-
+    textAlign: 'center',
     fontFamily: 'Roboto_400Regular',
   },
   counter: {
