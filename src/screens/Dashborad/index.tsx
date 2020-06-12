@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 import { Feather as Icon } from '@expo/vector-icons';
-import Detail from '../DetailCountry';
+import { numberMask } from '../../utils/normalize';
 
 export interface CountryCounter {
   Country: string;
@@ -45,7 +45,6 @@ export default function Dashboard() {
 
   const [cards, setCards] = useState<CountryCounter[]>([])
   const [globalCounter, setGlobalCounter] = useState<GlobalCounter>({} as GlobalCounter)
-  // const [countries, setCountries] = useState<Countries[]>([]) //All Countries
 
   useEffect(() => {
     api.get<Sumary>('summary').then(resp => {
@@ -102,17 +101,17 @@ export default function Dashboard() {
             <Text style={styles.globalStatusTitle}>No mundo</Text>
           </View>
           <Text style={styles.globalDescriptionText}> Casos confirmados</Text>
-          <Text style={styles.globalStatusText}>{globalCounter.TotalConfirmed}</Text>
+          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.TotalConfirmed))}</Text>
           <Text style={styles.globalDescriptionText}> Total Mortos</Text>
-          <Text style={styles.globalStatusText}>{globalCounter.TotalDeaths}</Text>
+          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.TotalDeaths))}</Text>
           <Text style={styles.globalDescriptionText}> Total recuperados</Text>
-          <Text style={styles.globalStatusText}>{globalCounter.TotalRecovered}</Text>
+          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.TotalRecovered))}</Text>
           <Text style={styles.globalDescriptionText}> Novos confirmados</Text>
-          <Text style={styles.globalStatusText}>{globalCounter.NewConfirmed}</Text>
+          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.NewConfirmed))}</Text>
           <Text style={styles.globalDescriptionText}> Novos mortos</Text>
-          <Text style={styles.globalStatusText}>{globalCounter.NewDeaths}</Text>
+          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.NewDeaths))}</Text>
           <Text style={styles.globalDescriptionText}> Novos recuperados</Text>
-          <Text style={styles.globalStatusText}>{globalCounter.NewRecovered}</Text>
+          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.NewRecovered))}</Text>
         </View>
       </View>
 
@@ -133,7 +132,7 @@ export default function Dashboard() {
                 <Text style={styles.country}>{item.Country.length < 15 ? item.Country : item.CountryCode}</Text>
                 {/* <Text style={styles.counter}>{item.Country}</Text> */}
                 <Text style={styles.counterDescription}>Casos confirmados</Text>
-                <Text style={styles.counter}>{item.TotalConfirmed}</Text>
+                <Text style={styles.counter}>{numberMask(String(item.TotalConfirmed))}</Text>
               </View>
             </TouchableOpacity>
           ))}
