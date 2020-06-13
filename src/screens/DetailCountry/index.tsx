@@ -3,6 +3,8 @@ import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'rea
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Feather as Icon, MaterialIcons } from '@expo/vector-icons';
 import { CountryCounter } from '../../utils/interfaces';
+import { Roboto_900Black } from '@expo-google-fonts/roboto';
+import { numberMask } from '../../utils/normalize';
 
 export default function Detail() {
     const navigation = useNavigation();
@@ -12,80 +14,135 @@ export default function Detail() {
 
     return (
         <>
-            <View style={styles.button}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-left" size={25} color="black" />
-                </TouchableOpacity>
-            </View>
+            <View style={styles.container}>
+                <View style={styles.button}>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Icon name="arrow-left" size={25} color="black" />
+                    </TouchableOpacity>
+                </View>
 
-            <View >
-                <Text style={styles.Text}>
-                    Informações detalhadas
+                <View >
+                    <Text style={styles.TextHeader}>
+                        Informações detalhadas
                 </Text>
-            </View>
-            <View>
-                <Image
-                    style={styles.flag}
-                    source={{ uri: `https://www.countryflags.io/${routeParams.CountryCode}/shiny/64.png` }}
-                />
-            </View>
-            <View>
-                <Text style={styles.counterDescription}>Novos confirmados</Text>
-                <Text style={styles.counter}>{routeParams.NewConfirmed}</Text>
-                <Text style={styles.counterDescription}>Total confirmado confirmados</Text>
-                <Text style={styles.counter}>{routeParams.TotalConfirmed}</Text>
-                <Text style={styles.counterDescription}>Novos mortos</Text>
-                <Text style={styles.counter}>{routeParams.NewDeaths}</Text>
-                <Text style={styles.counterDescription}>Total de mortos</Text>
-                <Text style={styles.counter}>{routeParams.TotalDeaths}</Text>
-                <Text style={styles.counterDescription}>Novos Recuperados</Text>
-                <Text style={styles.counter}>{routeParams.NewRecovered}</Text>
-                <Text style={styles.counterDescription}>Total recuperado</Text>
-                <Text style={styles.counter}>{routeParams.TotalRecovered}</Text>
-            </View>
+                </View>
+                <View style={styles.Country}>
+                    <View style={styles.Teste}>
+                    <Image
+                            //style={styles.flag}
+                            source={{ uri: `https://www.countryflags.io/${routeParams.CountryCode}/shiny/64.png` }}
+                        />
+                    </View>
+                </View>
+                <View style={styles.Country}>
+                    <View style={styles.Teste}>
+                        <Text style={styles.CountryTitle}>{routeParams.Country}</Text>
+                    </View>
+                </View>
+                    <View style={styles.box}>
+                        <View style={styles.counterDescription}>
+                            <Text style={styles.counter}>{numberMask(String(routeParams.NewConfirmed))}</Text>
+                            <Text >Novos confirmados </Text>
+                        </View>
+                    </View>
+                    <View style={styles.box}>
+                        <View style={styles.counterDescription}>
+                            <Text style={styles.counter}>{numberMask(String(routeParams.TotalConfirmed))}</Text>
+                            <Text >Total confirmados</Text>
+                        </View>
+                    </View>
+                    <View style={styles.box}>
+                        <View style={styles.counterDescription}>
+                            <Text style={styles.counter}>{numberMask(String(routeParams.NewDeaths))}</Text>
+                            <Text >Novos mortos</Text>
+                        </View>
+                    </View>
+                    <View style={styles.box}>
+                        <View style={styles.counterDescription}>
+                            <Text style={styles.counter}>{numberMask(String(routeParams.TotalDeaths))}</Text>
+                            <Text >Total de mortos</Text>
+                        </View>
+                    </View>
+                    <View style={styles.box}>
+                        <View style={styles.counterDescription}>
+                            <Text style={styles.counter}>{numberMask(String(routeParams.NewRecovered))}</Text>
+                            <Text >Novos recuperados</Text>
+                        </View>
+                    </View>
+                    <View style={styles.box}>
+                        <View style={styles.counterDescription}>
+                            <Text style={styles.counter}>{numberMask(String(routeParams.TotalRecovered))}</Text>
+                            <Text >Total de recuperados</Text>
+                        </View>
+                    </View>
+                </View>
         </>
     )
 };
 
 const styles = StyleSheet.create({
-    button: {
-        paddingTop: 30,
-        paddingLeft: 5,
-        marginStart: 10,
-        marginRight: 320,
-        marginVertical: 10,
-    },
-    description: {
-        color: '#6C6C80',
-        textAlign: 'center',
-        fontFamily: 'Roboto_400Regular',
-    },
     container: {
-        padding: 32,
-        paddingTop: 20,
+        flex: 1,
+        width: '100%',
+        flexDirection: "row",
+        flexWrap: "wrap",
+        backgroundColor: '#FFF'
+    },
+    button: {
+        flexDirection: "column",
+    },
+    TextHeader: {
+        flex: 1,
+        width: '100%',
+        fontSize: 40,
+        fontFamily: 'Ubuntu_700Bold',
+        flexWrap: "wrap",
+        flexDirection: "row",
+        textAlign: 'center',
     },
     flag: {
-        width: 200,
-        height: 200,
-        resizeMode: 'cover',
-        paddingStart: 50,
-        marginLeft: 75,
+        flex: 1,
+        //resizeMode: 'cover',
         paddingVertical: 30,
+        backgroundColor: '#000080',
     },
-    Text: {
+    Country: {
+        width: '100%',
+        height: '15%',
+        padding: 20,
+    },
+    CountryTitle: {
+        flex: 1,
         fontSize: 30,
-        paddingTop: 20,
-        textAlign: 'center',
         fontFamily: 'Ubuntu_700Bold',
+        //textAlign: 'center',
+    },
+    Teste: {
+        flex: 1,
+        fontFamily: 'Roboto_400Regular',
+        alignItems: "center",
+        textAlign: 'center',
+    },
+    box: {
+        width: '50%',
+        height: '15%',
+        paddingHorizontal: 20,
+        padding: 10,
     },
     counterDescription: {
-        textAlign: 'center',
+        flex: 1,
         fontFamily: 'Roboto_400Regular',
+        borderWidth: 2,
+        borderColor: "#C0C0C0",
+        borderRadius: 8,
+        alignItems: "center",
+        textAlign: 'center',
+        minHeight: 80,
     },
     counter: {
         fontFamily: 'Ubuntu_700Bold',
         fontSize: 20,
         textAlign: 'center',
-        paddingVertical: 5
+        paddingVertical: 8,
     },
 })
