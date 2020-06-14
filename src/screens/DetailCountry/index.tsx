@@ -50,32 +50,18 @@ export default function Detail() {
                     <Text style={styles.counter}>{numberMask(String(cases))}</Text>
                 </View>
                 <View style={styles.box}>
-                    <Text style={styles.title}>Total confirmados</Text>
+                    <Text style={styles.title}>Confirmados</Text>
                     <Text style={styles.counter}>{numberMask(String(confirmed))}</Text>
 
                 </View>
-                {/* <View style={styles.box}>
-                    <Text style={styles.title}>Novos mortos</Text>
-                    <Text style={styles.counter}>{numberMask(String(NewDeaths))}</Text>
-                </View> */}
                 <View style={styles.box}>
-                    <Text style={styles.title}>Total de mortos</Text>
+                    <Text style={styles.title}>Mortes</Text>
                     <Text style={styles.counter}>{numberMask(String(deaths))}</Text>
                 </View>
-                {/* <View style={styles.box}>
-                    <Text style={styles.title}>Novos recuperados</Text>
-                    <Text style={styles.counter}>{numberMask(String(NewRecovered))}</Text>
-
-                </View> */}
                 <View style={styles.box}>
-                    <Text style={styles.title}>Total de recuperados</Text>
+                    <Text style={styles.title}>Recuperados</Text>
                     <Text style={styles.counter}>{numberMask(String(recovered))}</Text>
                 </View>
-                {/* <View style={styles.date}>
-                    <Text style={styles.dateText}>Atualizado em: {
-                        updated_at?.substring(0, 10).split('-').reverse().join('/')
-                    }</Text>
-                </View> */}
             </View>
             <View style={styles.footer}>
                 <Text style={styles.footerTitle}>Para dúvidas/críticas/sugestões</Text>
@@ -123,8 +109,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 100,
-        // borderWidth: 2,
-        // borderColor: "#C0C0C0",
         borderRadius: 8,
         margin: '1%',
         marginBottom: 15,
@@ -164,11 +148,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Roboto_500Medium',
     },
-    date: {
-        width: '100%',
-        padding: 10
-    },
-    dateText: {
-
-    }
 });

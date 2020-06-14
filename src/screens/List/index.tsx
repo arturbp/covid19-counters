@@ -3,11 +3,16 @@ import { StyleSheet, View, Text, FlatList, TouchableOpacity, TextInput, Image } 
 import { Feather as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
-import { CountryCounter, Sumary } from '../../utils/interfaces';
+import { Countries } from '../../utils/interfaces';
 import GoBack from '../../components/GoBack';
+import axios from 'axios';
+
+interface DataResponse {
+  data: Countries[]
+}
 
 export default function List() {
-  const [countries, setCountries] = useState<CountryCounter[]>([]);
+  const [countries, setCountries] = useState<Countries[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -18,21 +23,43 @@ export default function List() {
   }, []);
 
   async function getList() {
-    await api.get<Sumary>('summary').then(resp => {
-      setCountries(resp.data.Countries)
-      setLoading(false)
+    await api.get<DataResponse>('countries').then(async resp => {
+      const getFlag = resp.data.data.map(async item => {
+        const country = item.country.length > 3 ? item.country
+          :
+          await getCountry(item.country);
+
+        const alpha2Code = await axios.get(`https://restcountries.eu/rest/v2/name/${item.country}?fields=alpha2Code`).then(resp => {
+          return resp.data[0].alpha2Code
+        }).catch(() => item.country.substring(0, 2));
+
+        return { ...item, alpha2Code, country: country };
+      });
+
+      const alreadyFinish = await Promise.all(getFlag);
+
+      setCountries(alreadyFinish);
+      setLoading(false);
     });
   };
 
-  function renderCountry(item: CountryCounter) {
+  async function getCountry(alpahCode: string) {
+    const response = await axios.get(`https://restcountries.eu/rest/v2/alpha/${alpahCode}`)
+      .then(resp => resp.data.name)
+      .catch(() => '');
+      
+    return response;
+  }
+
+  function renderCountry(item: Countries) {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('Detail', item)}>
         <View style={styles.country}>
           <Image
             style={styles.flag}
-            source={{ uri: `https://www.countryflags.io/${item.CountryCode}/shiny/64.png` }}
+            source={{ uri: `https://flagpedia.net/data/flags/normal/${item.alpha2Code.toLowerCase()}.png` }}
           />
-          <Text style={styles.countryText}>{item.Country}</Text>
+          <Text style={styles.countryText}>{item.country}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -44,7 +71,7 @@ export default function List() {
         <GoBack />
       </View>
       <View style={styles.search}>
-        <Icon style={styles.searchIcon} name="search" size={20} color="black" />
+        <Icon name="search" size={20} color="black" />
         <TextInput
           style={styles.searchInput}
           value={search}
@@ -56,9 +83,9 @@ export default function List() {
           search === '' ? countries
             :
             countries.filter(item =>
-              item.Country.toLowerCase().includes(search.toLowerCase()))
+              item.country.toLowerCase().includes(search.toLowerCase()))
         }
-        renderItem={({ item }: { item: CountryCounter }) => renderCountry(item)}
+        renderItem={({ item }: { item: Countries }) => renderCountry(item)}
         keyExtractor={(item, index) => index.toString()}
       />
         :
@@ -93,10 +120,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Ubuntu_700Bold',
   },
   flag: {
-    width: 32,
-    height: 32,
+    width: 64,
+    height: 40,
     resizeMode: 'cover',
-    marginRight: 10
+    marginRight: 10,
+    borderWidth: 0.5,
+    borderColor: 'silver'
   },
   search: {
     backgroundColor: '#FFF',
@@ -106,9 +135,6 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
     borderRadius: 5
-  },
-  searchIcon: {
-
   },
   searchInput: {
     width: '90%',

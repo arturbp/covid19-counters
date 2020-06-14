@@ -69,7 +69,7 @@ export default function Dashboard() {
 
         const alpha2Code = await axios.get(`https://restcountries.eu/rest/v2/name/${country}?fields=alpha2Code`).then(resp => {
           return resp.data[0].alpha2Code
-        });
+        }).catch(() => item.country.substring(0, 2));
         return { ...item, alpha2Code, country: country }
       });
 
@@ -81,8 +81,10 @@ export default function Dashboard() {
   };
 
   async function getCountry(alpahCode: string) {
-    const response = await axios.get(`https://restcountries.eu/rest/v2/alpha/${alpahCode}`).then(resp => resp.data.name)
-    return response
+    const response = await axios.get(`https://restcountries.eu/rest/v2/alpha/${alpahCode}`)
+      .then(resp => resp.data.name)
+      .catch(() => '');
+    return response;
   }
 
   return (
@@ -130,7 +132,8 @@ export default function Dashboard() {
               <View style={styles.card}>
                 <Image
                   style={styles.flag}
-                  source={{ uri: `https://www.countryflags.io/${item.alpha2Code}/shiny/64.png` }}
+                  source={{ uri: `https://flagpedia.net/data/flags/normal/${item.alpha2Code.toLowerCase()}.png` }}
+                // source={{ uri: `https://www.countryflags.io/${item.alpha2Code}/shiny/64.png` }}
                 />
                 <Text style={styles.country}>{item.country}</Text>
                 {/* <Text style={styles.counter}>{item.Country}</Text> */}
@@ -139,11 +142,8 @@ export default function Dashboard() {
               </View>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity onPress={() =>
-            // navigation.navigate('List')
-            alert("Lista de todos os países em breve")
-          }>
-            <View style={styles.card}>
+          <TouchableOpacity onPress={() => navigation.navigate('List')}>
+            <View style={[styles.card, { justifyContent: 'center' }]}>
               <Icon name="search" size={40} color="black" />
             </View>
           </TouchableOpacity>
@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     marginTop: 30,
     padding: 20,
+    borderRadius: 5
   },
   globalStatusTitle: {
     fontSize: 20,
@@ -204,13 +205,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     width: 150,
     height: 200,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingTop: 20,
+    borderRadius: 5
   },
   flag: {
     width: 64,
-    height: 64,
+    height: 40,
     resizeMode: 'cover',
+    borderWidth: 0.5,
+    borderColor: 'silver'
   },
   country: {
     fontFamily: 'Ubuntu_700Bold',
