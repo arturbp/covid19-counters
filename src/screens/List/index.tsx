@@ -4,18 +4,25 @@ import { Feather as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 import { CountryCounter, Sumary } from '../../utils/interfaces';
+import GoBack from '../../components/GoBack';
 
 export default function List() {
   const [countries, setCountries] = useState<CountryCounter[]>([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    api.get<Sumary>('summary').then(resp => {
-      setCountries(resp.data.Countries)
-    });
+    getList();
   }, []);
+
+  async function getList() {
+    await api.get<Sumary>('summary').then(resp => {
+      setCountries(resp.data.Countries)
+      setLoading(false)
+    });
+  };
 
   function renderCountry(item: CountryCounter) {
     return (
@@ -34,9 +41,7 @@ export default function List() {
   return (
     <View style={styles.container}>
       <View style={styles.arrow}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={25} color="black" />
-        </TouchableOpacity>
+        <GoBack />
       </View>
       <View style={styles.search}>
         <Icon style={styles.searchIcon} name="search" size={20} color="black" />
@@ -46,16 +51,21 @@ export default function List() {
           onChangeText={setSearch}
         />
       </View>
-      <FlatList
+      {!loading ? <FlatList
         data={
-          search === '' ? countries 
-          : 
-          countries.filter(item =>
-            item.Country.toLowerCase().includes(search.toLowerCase()))
+          search === '' ? countries
+            :
+            countries.filter(item =>
+              item.Country.toLowerCase().includes(search.toLowerCase()))
         }
         renderItem={({ item }: { item: CountryCounter }) => renderCountry(item)}
         keyExtractor={(item, index) => index.toString()}
       />
+        :
+        <View style={styles.loading}>
+          <Text style={styles.loadingText}>Carregando...</Text>
+        </View>
+      }
     </View>
   );
 };
@@ -107,5 +117,14 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     fontFamily: 'Roboto_400Regular',
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  loadingText: {
+    fontFamily: 'Roboto_400Regular',
+    fontSize: 30
   }
 });

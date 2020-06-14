@@ -1,143 +1,134 @@
 import React, { } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Feather as Icon, MaterialIcons } from '@expo/vector-icons';
-import { CountryCounter } from '../../utils/interfaces';
-import { Roboto_900Black } from '@expo-google-fonts/roboto';
+import { StyleSheet, Text, View, Image, SafeAreaView } from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import { Feather as Icon } from '@expo/vector-icons';
+import { Countries } from '../../utils/interfaces';
+import GoBack from '../../components/GoBack';
+import { RectButton } from 'react-native-gesture-handler';
 import { numberMask } from '../../utils/normalize';
+import * as MailComposer from 'expo-mail-composer';
 
 export default function Detail() {
-    const navigation = useNavigation();
     const route = useRoute();
 
-    const routeParams = route.params as CountryCounter;
+    const routeParams = route.params as Countries;
+
+    const {
+        cases,
+        confirmed,
+        deaths,
+        recovered,
+        alpha2Code,
+        country,
+        updated_at
+    } = routeParams;
+
+    function handleComposeMail() {
+        MailComposer.composeAsync({
+            subject: 'Covid-19: Contadores - Dúvidas/críticas/sugestões',
+            recipients: ['oxe.desenvolvimento@gmail.com'],
+        });
+    };
 
     return (
-        <>
-            <View style={styles.container}>
-                <View style={styles.button}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name="arrow-left" size={25} color="black" />
-                    </TouchableOpacity>
-                </View>
-
-                <View >
-                    <Text style={styles.TextHeader}>
-                        Informações detalhadas
-                </Text>
-                </View>
-                <View style={styles.Country}>
-                    <View style={styles.Teste}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.header}>
+                <GoBack />
+                <View style={{ marginHorizontal: 5 }}>
                     <Image
-                            //style={styles.flag}
-                            source={{ uri: `https://www.countryflags.io/${routeParams.CountryCode}/shiny/64.png` }}
-                        />
-                    </View>
+                        style={styles.flag}
+                        source={{ uri: `https://www.countryflags.io/${alpha2Code}/shiny/64.png` }}
+                    />
                 </View>
-                <View style={styles.Country}>
-                    <View style={styles.Teste}>
-                        <Text style={styles.CountryTitle}>{routeParams.Country}</Text>
-                    </View>
+                <View>
+                    <Text style={styles.countryTitle}>{country}</Text>
                 </View>
-                    <View style={styles.box}>
-                        <View style={styles.counterDescription}>
-                            <Text style={styles.counter}>{numberMask(String(routeParams.NewConfirmed))}</Text>
-                            <Text >Novos confirmados </Text>
-                        </View>
-                    </View>
-                    <View style={styles.box}>
-                        <View style={styles.counterDescription}>
-                            <Text style={styles.counter}>{numberMask(String(routeParams.TotalConfirmed))}</Text>
-                            <Text >Total confirmados</Text>
-                        </View>
-                    </View>
-                    <View style={styles.box}>
-                        <View style={styles.counterDescription}>
-                            <Text style={styles.counter}>{numberMask(String(routeParams.NewDeaths))}</Text>
-                            <Text >Novos mortos</Text>
-                        </View>
-                    </View>
-                    <View style={styles.box}>
-                        <View style={styles.counterDescription}>
-                            <Text style={styles.counter}>{numberMask(String(routeParams.TotalDeaths))}</Text>
-                            <Text >Total de mortos</Text>
-                        </View>
-                    </View>
-                    <View style={styles.box}>
-                        <View style={styles.counterDescription}>
-                            <Text style={styles.counter}>{numberMask(String(routeParams.NewRecovered))}</Text>
-                            <Text >Novos recuperados</Text>
-                        </View>
-                    </View>
-                    <View style={styles.box}>
-                        <View style={styles.counterDescription}>
-                            <Text style={styles.counter}>{numberMask(String(routeParams.TotalRecovered))}</Text>
-                            <Text >Total de recuperados</Text>
-                        </View>
-                    </View>
+            </View>
+            <View style={styles.container}>
+                <View style={styles.box}>
+                    <Text style={styles.title}>Casos Ativos</Text>
+                    <Text style={styles.counter}>{numberMask(String(cases))}</Text>
                 </View>
-        </>
-    )
+                <View style={styles.box}>
+                    <Text style={styles.title}>Total confirmados</Text>
+                    <Text style={styles.counter}>{numberMask(String(confirmed))}</Text>
+
+                </View>
+                {/* <View style={styles.box}>
+                    <Text style={styles.title}>Novos mortos</Text>
+                    <Text style={styles.counter}>{numberMask(String(NewDeaths))}</Text>
+                </View> */}
+                <View style={styles.box}>
+                    <Text style={styles.title}>Total de mortos</Text>
+                    <Text style={styles.counter}>{numberMask(String(deaths))}</Text>
+                </View>
+                {/* <View style={styles.box}>
+                    <Text style={styles.title}>Novos recuperados</Text>
+                    <Text style={styles.counter}>{numberMask(String(NewRecovered))}</Text>
+
+                </View> */}
+                <View style={styles.box}>
+                    <Text style={styles.title}>Total de recuperados</Text>
+                    <Text style={styles.counter}>{numberMask(String(recovered))}</Text>
+                </View>
+                {/* <View style={styles.date}>
+                    <Text style={styles.dateText}>Atualizado em: {
+                        updated_at?.substring(0, 10).split('-').reverse().join('/')
+                    }</Text>
+                </View> */}
+            </View>
+            <View style={styles.footer}>
+                <Text style={styles.footerTitle}>Para dúvidas/críticas/sugestões</Text>
+                <RectButton style={styles.button} onPress={handleComposeMail}>
+                    <Icon name="mail" size={20} color="#FFF" />
+                    <Text style={styles.buttonText}>E-mail</Text>
+                </RectButton>
+            </View>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        width: '100%',
         flexDirection: "row",
         flexWrap: "wrap",
-        backgroundColor: '#FFF'
+        backgroundColor: '#dcdce6',
+        justifyContent: 'center',
+        paddingTop: 20
     },
-    button: {
-        flexDirection: "column",
-    },
-    TextHeader: {
-        flex: 1,
-        width: '100%',
-        fontSize: 40,
-        fontFamily: 'Ubuntu_700Bold',
-        flexWrap: "wrap",
+    header: {
         flexDirection: "row",
-        textAlign: 'center',
+        padding: 10,
+        paddingTop: 60,
+        alignItems: 'center',
+        backgroundColor: '#dcdce6',
     },
     flag: {
-        flex: 1,
-        //resizeMode: 'cover',
-        paddingVertical: 30,
-        backgroundColor: '#000080',
+        width: 32,
+        height: 32,
+        resizeMode: 'cover',
     },
-    Country: {
-        width: '100%',
-        height: '15%',
-        padding: 20,
-    },
-    CountryTitle: {
-        flex: 1,
-        fontSize: 30,
+    countryTitle: {
+        fontSize: 25,
         fontFamily: 'Ubuntu_700Bold',
-        //textAlign: 'center',
     },
-    Teste: {
-        flex: 1,
+    title: {
         fontFamily: 'Roboto_400Regular',
-        alignItems: "center",
-        textAlign: 'center',
+        fontSize: 16
     },
     box: {
-        width: '50%',
-        height: '15%',
-        paddingHorizontal: 20,
+        width: '45%',
         padding: 10,
-    },
-    counterDescription: {
-        flex: 1,
-        fontFamily: 'Roboto_400Regular',
-        borderWidth: 2,
-        borderColor: "#C0C0C0",
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 100,
+        // borderWidth: 2,
+        // borderColor: "#C0C0C0",
         borderRadius: 8,
-        alignItems: "center",
-        textAlign: 'center',
-        minHeight: 80,
+        margin: '1%',
+        marginBottom: 15,
+        backgroundColor: '#FFF',
     },
     counter: {
         fontFamily: 'Ubuntu_700Bold',
@@ -145,4 +136,39 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingVertical: 8,
     },
-})
+    footer: {
+        backgroundColor: '#dcdce6',
+        paddingVertical: 20,
+        paddingHorizontal: 32,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    footerTitle: {
+        marginBottom: 10,
+        fontFamily: 'Roboto_400Regular',
+        fontSize: 15,
+        fontStyle: 'italic'
+    },
+    button: {
+        width: '48%',
+        backgroundColor: '#34CB79',
+        borderRadius: 10,
+        height: 50,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonText: {
+        marginLeft: 8,
+        color: '#FFF',
+        fontSize: 16,
+        fontFamily: 'Roboto_500Medium',
+    },
+    date: {
+        width: '100%',
+        padding: 10
+    },
+    dateText: {
+
+    }
+});

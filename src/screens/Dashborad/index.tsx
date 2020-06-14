@@ -4,144 +4,150 @@ import { useNavigation } from '@react-navigation/native';
 import api from '../../services/api';
 import { Feather as Icon } from '@expo/vector-icons';
 import { numberMask } from '../../utils/normalize';
+import { Countries, GlobalCounter } from '../../utils/interfaces';
+import axios from 'axios';
 
-export interface CountryCounter {
-  Country: string;
-  CountryCode: string;
-  NewConfirmed: number;
-  TotalConfirmed: number;
-  NewDeaths: number;
-  TotalDeaths: number;
-  NewRecovered: number;
-  TotalRecovered: number;
+interface DataCountries {
+  data: Countries[]
 }
-
-interface GlobalCounter {
-  NewConfirmed: number;
-  TotalConfirmed: number;
-  NewDeaths: number;
-  TotalDeaths: number;
-  NewRecovered: number;
-  TotalRecovered: number;
-}
-
-interface Sumary {
-  Global: GlobalCounter;
-  Countries: CountryCounter[];
-}
-
-// interface Countries {
-//   Country: string;
-//   Slug: string;
-//   ISO2: string;
-// }
 
 export default function Dashboard() {
+  const [cards, setCards] = useState<Countries[]>([]);
+  const [globalCounter, setGlobalCounter] = useState<GlobalCounter>({} as GlobalCounter);
+  const [loading, setLoading] = useState(true);
+
+  const {
+    cases,
+    confirmed,
+    deaths,
+    recovered,
+  } = globalCounter;
+
   const navigation = useNavigation();
 
-  /*function navigationToDetail(CountryCode: string) {
-    navigation.navigate('Detail', {Code: CountryCode});
-  }*/
-
-  const [cards, setCards] = useState<CountryCounter[]>([])
-  const [globalCounter, setGlobalCounter] = useState<GlobalCounter>({} as GlobalCounter)
-
   useEffect(() => {
-    api.get<Sumary>('summary').then(resp => {
-      const countriesFiltered = resp.data.Countries.filter(item => {
-        if (
-          item.CountryCode === 'BR' ||
-          item.CountryCode === 'US' ||
-          item.CountryCode === 'CN' ||
-          item.CountryCode === 'IT' ||
-          item.CountryCode === 'ES' ||
-          item.CountryCode === 'ZA'
-        ) {
-          return true
-        }
-      })
-      setCards(countriesFiltered.map(item => {
-        const obj = {
-          Country: item.Country,
-          CountryCode: item.CountryCode,
-          NewConfirmed: item.NewConfirmed,
-          TotalConfirmed: item.TotalConfirmed,
-          NewDeaths: item.NewDeaths,
-          TotalDeaths: item.TotalDeaths,
-          NewRecovered: item.NewRecovered,
-          TotalRecovered: item.TotalRecovered,
-        }
-        return obj
-      }))
-      setGlobalCounter(resp.data.Global)
-    });
-
-    // api.get<Countries[]>('countries').then(resp => {
-    //   setCountries(resp.data.sort())
-    // });
-
+    getCounters();
   }, []);
 
+  async function getCounters() {
+    await api.get<DataCountries>('countries').then(async resp => {
+      const allCountries = resp.data.data;
+
+      let cases = 0;
+      let confirmed = 0;
+      let deaths = 0;
+      let recovered = 0;
+
+      for (let i = 0; i < allCountries.length; i++) {
+        cases += allCountries[i].cases
+        confirmed += allCountries[i].confirmed
+        deaths += allCountries[i].deaths
+        recovered += allCountries[i].recovered
+      }
+
+      setGlobalCounter({
+        cases,
+        confirmed,
+        deaths,
+        recovered
+      })
+
+      const filteredCountries = allCountries.filter(item =>
+        item.country === 'Brazil' ||
+        item.country === 'China' ||
+        item.country === 'US' ||
+        item.country === 'Italy' ||
+        item.country === 'Spain' ||
+        item.country === 'South Africa'
+      );
+
+      const getFlag = filteredCountries.map(async item => {
+        const country = item.country.length > 3 ? item.country
+          :
+          await getCountry(item.country);
+
+
+        const alpha2Code = await axios.get(`https://restcountries.eu/rest/v2/name/${country}?fields=alpha2Code`).then(resp => {
+          return resp.data[0].alpha2Code
+        });
+        return { ...item, alpha2Code, country: country }
+      });
+
+      const alreadyFinish = await Promise.all(getFlag);
+
+      setCards(alreadyFinish);
+      setLoading(false);
+    });
+  };
+
+  async function getCountry(alpahCode: string) {
+    const response = await axios.get(`https://restcountries.eu/rest/v2/alpha/${alpahCode}`).then(resp => resp.data.name)
+    return response
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: '#dcdce6' }}>
-      {/* <FlatList
-        data={countries}
-        renderItem={({ item }: { item: Countries }) => renderCountry(item)}
-        keyExtractor={(item, index) => index.toString()}
-      /> */}
       <View style={styles.container}>
 
         <Text style={styles.title}>Bem vindo.</Text>
-        <Text style={styles.description}>Os contadores são atualizados diariamente (nos dias úteis).</Text>
+        <Text style={styles.description}>Os contadores são atualizados diariamente.</Text>
 
         <View style={styles.globalStatus}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
             <Icon name="globe" style={{ fontSize: 20, marginRight: 5 }} />
             <Text style={styles.globalStatusTitle}>No mundo</Text>
+            <View style={{ width: '56%', alignItems: 'flex-end', justifyContent: 'center' }}>
+              <TouchableOpacity
+                style={{ marginLeft: 10 }}
+                onPress={() => {
+                  setLoading(true);
+                  getCounters();
+                }}
+              >
+                <Icon name="rotate-cw" size={20} />
+              </TouchableOpacity>
+            </View>
           </View>
-          <Text style={styles.globalDescriptionText}> Casos confirmados</Text>
-          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.TotalConfirmed))}</Text>
-          <Text style={styles.globalDescriptionText}> Total Mortos</Text>
-          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.TotalDeaths))}</Text>
-          <Text style={styles.globalDescriptionText}> Total recuperados</Text>
-          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.TotalRecovered))}</Text>
-          <Text style={styles.globalDescriptionText}> Novos confirmados</Text>
-          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.NewConfirmed))}</Text>
-          <Text style={styles.globalDescriptionText}> Novos mortos</Text>
-          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.NewDeaths))}</Text>
-          <Text style={styles.globalDescriptionText}> Novos recuperados</Text>
-          <Text style={styles.globalStatusText}>{numberMask(String(globalCounter.NewRecovered))}</Text>
+          <Text style={styles.globalDescriptionText}>Casos Ativos</Text>
+          <Text style={styles.globalStatusText}>{!loading ? numberMask(String(cases)) : 'Carregando...'}</Text>
+          <Text style={styles.globalDescriptionText}>Total Confirmados</Text>
+          <Text style={styles.globalStatusText}>{!loading ? numberMask(String(confirmed)) : 'Carregando...'}</Text>
+          <Text style={styles.globalDescriptionText}>Total Mortos</Text>
+          <Text style={styles.globalStatusText}>{!loading ? numberMask(String(deaths)) : 'Carregando...'}</Text>
+          <Text style={styles.globalDescriptionText}>Total recuperados</Text>
+          <Text style={styles.globalStatusText}>{!loading ? numberMask(String(recovered)) : 'Carregando...'}</Text>
         </View>
       </View>
 
       <View style={styles.list}>
-        <ScrollView
+        {!loading && <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20 }}
         >
-          {cards.map((item, index) => (
-
-            <TouchableOpacity key={index} onPress={() =>navigation.navigate('Detail', item)}>
+          {cards.sort((a, b) => b.confirmed - a.confirmed).map((item, index) => (
+            <TouchableOpacity key={index} onPress={() => navigation.navigate('Detail', item)}>
               <View style={styles.card}>
                 <Image
                   style={styles.flag}
-                  source={{ uri: `https://www.countryflags.io/${item.CountryCode}/shiny/64.png` }}
+                  source={{ uri: `https://www.countryflags.io/${item.alpha2Code}/shiny/64.png` }}
                 />
-                <Text style={styles.country}>{item.Country.length < 15 ? item.Country : item.CountryCode}</Text>
+                <Text style={styles.country}>{item.country}</Text>
                 {/* <Text style={styles.counter}>{item.Country}</Text> */}
                 <Text style={styles.counterDescription}>Casos confirmados</Text>
-                <Text style={styles.counter}>{numberMask(String(item.TotalConfirmed))}</Text>
+                <Text style={styles.counter}>{numberMask(String(item.confirmed))}</Text>
               </View>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity onPress={() => navigation.navigate('List')}>
+          <TouchableOpacity onPress={() =>
+            // navigation.navigate('List')
+            alert("Lista de todos os países em breve")
+          }>
             <View style={styles.card}>
               <Icon name="search" size={40} color="black" />
             </View>
           </TouchableOpacity>
-        </ScrollView>
+        </ScrollView>}
       </View>
     </View>
   );
@@ -169,7 +175,7 @@ const styles = StyleSheet.create({
   globalStatus: {
     backgroundColor: '#FFF',
     marginTop: 30,
-    padding: 20
+    padding: 20,
   },
   globalStatusTitle: {
     fontSize: 20,
@@ -199,7 +205,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 200,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   flag: {
     width: 64,
@@ -209,8 +215,8 @@ const styles = StyleSheet.create({
   country: {
     fontFamily: 'Ubuntu_700Bold',
     paddingBottom: 10,
-    fontSize: 18
-
+    fontSize: 18,
+    textAlign: 'center',
   },
   counterDescription: {
     textAlign: 'center',
@@ -219,6 +225,6 @@ const styles = StyleSheet.create({
   counter: {
     fontFamily: 'Ubuntu_700Bold',
     fontSize: 20,
-    paddingVertical: 5
+    paddingVertical: 5,
   }
 })
