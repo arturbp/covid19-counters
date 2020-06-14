@@ -6,7 +6,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -25,7 +25,9 @@
       "bundleIdentifier": "com.oxtech.covid19counters"
     },
     "android": {
-      "package": "com.oxtech.covid19counters"
+      "permissions": [],
+      "package": "com.oxtech.covid19counters",
+      "versionCode": 2
     }
   }
 }
