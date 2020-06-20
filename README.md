@@ -6,21 +6,21 @@
 ## Um projeto simples em React Native com API's públicas e Typescript
 
 ## Screenshots
-<p align="center">
+<p>
   <img 
        src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/SS_04.jpeg" 
        alt="home" 
-       width="300px"
+       width="150px"
        />
   <img 
        src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/SS_2.jpeg" 
        alt="list" 
-       width="300px"
+       width="150px"
        />
   <img 
        src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/SS_03.jpeg" 
        alt="details" 
-       width="300px"
+       width="150px"
        />
 </p>
 
