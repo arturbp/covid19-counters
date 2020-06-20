@@ -1,7 +1,11 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/icon.png?token=AJGTVR3JAWFRCBFVBSEEWH265WELE" alt="Covid-19: Contadores" />
+</p>
+
 # Covid-19: Contadores
 ## Um projeto simples em React Native com API's públicas e Typescript
 
-Instale agora em seu Android [clicando aqui]()
+
 
 ### Instalação
 Necessário ter o [Expo CLI](https://docs.expo.io/) instalado em sua máquina
@@ -12,7 +16,8 @@ yarn install -- ( instale as dependências )
 yarn start -- ( execute o app )
 ```
 ### Confira as API's utilizadas
-- [Coronavirus COVID19 API](https://documenter.getpostman.com/view/10808728/SzS8rjbc?version=latest)
+- [COVID-19 Brazil API](https://github.com/devarthurribeiro/covid19-brazil-api)
+- [Rest Countries](https://restcountries.eu/)
 - [Country Flags API](https://www.countryflags.io/)
 
 ## Créditos ✨
