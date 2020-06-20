@@ -1,11 +1,28 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/icon.png?token=AJGTVR3JAWFRCBFVBSEEWH265WELE" alt="Covid-19: Contadores" />
+  <img src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/icon.png" alt="Covid-19: Contadores" />
 </p>
 
 # Covid-19: Contadores
 ## Um projeto simples em React Native com API's públicas e Typescript
 
-
+## Screenshots
+<p align="center">
+  <img 
+       src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/SS_04.jpeg" 
+       alt="home" 
+       width="300px"
+       />
+  <img 
+       src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/SS_2.jpeg" 
+       alt="list" 
+       width="300px"
+       />
+  <img 
+       src="https://raw.githubusercontent.com/arturbp/covid19-counters/master/screenshots/SS_03.jpeg" 
+       alt="details" 
+       width="300px"
+       />
+</p>
 
 ### Instalação
 Necessário ter o [Expo CLI](https://docs.expo.io/) instalado em sua máquina
