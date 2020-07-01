@@ -24,6 +24,8 @@
        />
 </p>
 
+[Download APK](https://exp-shell-app-assets.s3.us-west-1.amazonaws.com/android/%40arturbp/Covid19-Counters-6f1c7d8a04214c7da37d7d02c54b88fb-signed.apk)
+
 ### Instalação
 Necessário ter o [Expo CLI](https://docs.expo.io/) instalado em sua máquina
 
